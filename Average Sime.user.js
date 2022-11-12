@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Average Sime
-// @namespace    http://tampermonkey.net/
-// @version      2077v.2
+// @namespace    https://github.com/
+// @version      2077v.3
 // @description  Cyberpunk Coding
 // @author       ezX
 // @match        https://agenda.sime.md/ords/f?p=*
@@ -79,7 +79,6 @@ _________        ___.                                     __
         }
 
         let nn = nextnote(note_arr.map(Number), parseInt($(notes).find('td')[2].innerHTML));
-        //return alert('Вам нужно: ' + nn);
 
         let old_notes = $(notes).find('td')[1];
         let sp_old = document.createElement('span');
@@ -97,6 +96,25 @@ _________        ___.                                     __
         $(notes).find('td')[2].innerHTML = average(new_avgavg);
         $(notes).find('td')[2].style.color = 'red';
 
+
+        let aa = [];
+        let lessons = document.querySelectorAll('tbody')[26].childNodes;
+        for (let lesson of lessons) {
+            if (lesson.nodeName == 'TR') {
+                let childsec = $(lesson).children()[0];
+                if ($(childsec).children()[0].innerHTML != 'Educație pentru societate' & $(childsec).children()[0].innerHTML != 'A/A' & $(childsec).children()[0].innerHTML != 'Educația fizică') {
+                    try {
+                        aa.push($(lesson).children()[2].innerHTML)
+                    } catch {console.log($(lesson).children())}
+                }
+            }
+        }
+
+        console.log(aa);
+
+        $($(lessons).last()).children()[2].innerHTML = parseInt(average(aa.map(Number)) * 100) / 100;
+        $($(lessons).last()).children()[2].style.color = 'red';
+
         return;
     }
 
@@ -106,8 +124,8 @@ _________        ___.                                     __
         avg_i.align = 'left';
         avg_i.innerHTML = 'Average';
 
-        let avg = document.querySelectorAll('tr')[72];
-        $(avg).append(avg_i);
+        let avg = document.querySelectorAll('thead')[1];
+        $(avg).children()[0].append(avg_i);
 
         let lessons = document.querySelectorAll('tbody')[26].childNodes;
         let avgavg = [];
@@ -140,9 +158,12 @@ _________        ___.                                     __
 
         let ntr = document.createElement('tr');
         let aa = document.createElement('td');
+        let spann = document.createElement('span');
         aa.className='t-Report-cell';
-        aa.style.cssText = 'color: skyblue; font-weight:bold;';
-        aa.innerHTML='A/A';
+        aa.headers = 'DISCIPLINA';
+        spann.style.cssText = 'color: skyblue; font-weight:bold;';
+        spann.innerHTML='A/A';
+        $(aa).append(spann);
         $(ntr).append(aa);
         $(ntr).append(document.createElement('td'));
         let ntd = document.createElement('td');
@@ -150,5 +171,5 @@ _________        ___.                                     __
         ntd.innerHTML = parseInt(average(avgavg.filter(f => f != 'NaN').map(Number)) * 100) / 100;
         $(ntr).append(ntd);
         $(document.querySelectorAll('tbody')[26]).append(ntr);
-    } catch {}
+    } catch(e) {console.log(e)}
 })();
