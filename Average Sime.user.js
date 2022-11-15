@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Average Sime
 // @namespace    https://github.com/
-// @version      2077v.3
-// @description  Cyberpunk Coding
+// @version      2077v.3.1
+// @description  Adds to the website agenda.sime.md the function of calculating the average score  |  Cyberpunk Coding
 // @author       ezX
 // @match        https://agenda.sime.md/ords/f?p=*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=sime.md
@@ -145,12 +145,14 @@ _________        ___.                                     __
 
                         $(lesson).append(note);
                         let btnplus = document.createElement('a');
+                        let tdbtn = document.createElement('td');
                         btnplus.href='#';
                         btnplus.innerHTML = '+';
-                        btnplus.className = 't-Report-cell';
+                        tdbtn.className = 't-Report-cell';
                         btnplus.id = 'EDITNLIST:' + count;
                         btnplus.onclick = function() { editnotelist(btnplus.id.split(':')[1]);};
-                        $(lesson).append(btnplus);
+                        $(tdbtn).append(btnplus);
+                        $(lesson).append(tdbtn);
                     }
                 }
             }
