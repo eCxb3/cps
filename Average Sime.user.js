@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Average Sime
 // @namespace    https://github.com/
-// @version      2077v.3.1
+// @version      2077v.3.1.1-beta
 // @description  Adds to the website agenda.sime.md the function of calculating the average score  |  Cyberpunk Coding
 // @author       ezX
 // @match        https://agenda.sime.md/ords/f?p=*
@@ -62,7 +62,8 @@ _________        ___.                                     __
     }
 
     function editnotelist(btnid) {
-        let notes = document.querySelectorAll('tbody')[26].childNodes[btnid];
+        let table = document.querySelectorAll('[summary="Semestrul I"]')[0].childNodes[3];
+        let notes = table.childNodes[btnid];
         if (parseInt($(notes).find('td')[2].innerHTML) >= 9) {
             return alert('Вам не поднять свою оценку');
         }
@@ -98,7 +99,9 @@ _________        ___.                                     __
 
 
         let aa = [];
-        let lessons = document.querySelectorAll('tbody')[26].childNodes;
+        let get_table = document.querySelectorAll('[summary="Semestrul I"]')[0].childNodes[3];
+        let lessons = get_table.childNodes;
+        //let lessons = document.querySelectorAll('tbody')[26].childNodes;
         for (let lesson of lessons) {
             if (lesson.nodeName == 'TR') {
                 let childsec = $(lesson).children()[0];
@@ -127,7 +130,8 @@ _________        ___.                                     __
         let avg = document.querySelectorAll('thead')[1];
         $(avg).children()[0].append(avg_i);
 
-        let lessons = document.querySelectorAll('tbody')[26].childNodes;
+        let table = document.querySelectorAll('[summary="Semestrul I"]')[0].childNodes[3];
+        let lessons = table.childNodes;
         let avgavg = [];
         let count = -1;
         for (let lesson of lessons) {
@@ -172,6 +176,6 @@ _________        ___.                                     __
         ntd.className = 't-Report-cell';
         ntd.innerHTML = parseInt(average(avgavg.filter(f => f != 'NaN').map(Number)) * 100) / 100;
         $(ntr).append(ntd);
-        $(document.querySelectorAll('tbody')[26]).append(ntr);
+        $(table).append(ntr);
     } catch(e) {console.log(e)}
 })();
