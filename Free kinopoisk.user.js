@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Free kinopoisk
 // @namespace    https://github.com/eCxb3/cps
-// @version      2077v.1.1-beta
+// @version      2077v.1.1.1-beta
 // @description  Allows you to watch movies/series on kinopoisk.ru for free.
 // @author       ezX {cps};
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js
-// @match        https://www.kinopoisk.ru/film/*
-// @match        https://www.kinopoisk.ru/series/*
-// @match        https://flicksbar.cc/*
+// @include      https://www.kinopoisk.ru/film/*
+// @include      https://www.kinopoisk.ru/series/*
+// @include      https://flicksbar.*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -117,7 +117,7 @@ _________        ___.                                     __
 
     if (window.location.host === 'www.kinopoisk.ru') {
         kinopoisk();
-    } else if (window.location.host === 'flicksbar.cc') {
+    } else if (window.location.host.includes('flicksbar')) {
         watching();
     }
 })();
