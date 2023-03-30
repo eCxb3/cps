@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Average Sime
-// @namespace    https://github.com/
-// @version      2077v.3.1.1-beta
+// @namespace    https://github.com/eCxb3/cps
+// @version      2077v.4-global
 // @description  Adds to the website agenda.sime.md the function of calculating the average score  |  Cyberpunk Coding
 // @author       ezX
 // @match        https://agenda.sime.md/ords/f?p=*
@@ -40,7 +40,7 @@ _________        ___.                                     __
         return finalstate.sum / finalstate.count;
     }([2, , , 6]);
 
-    function nextnote(arr, avg) {
+    function nextscore(arr, avg) {
         let nextn = Math.floor(avg);
         nextn++
 
@@ -61,121 +61,45 @@ _________        ___.                                     __
         return x;
     }
 
-    function editnotelist(btnid) {
-        let table = document.querySelectorAll('[summary="Semestrul I"]')[0].childNodes[3];
-        let notes = table.childNodes[btnid];
-        if (parseInt($(notes).find('td')[2].innerHTML) >= 9) {
-            return alert('Вам не поднять свою оценку');
-        }
+    function editscorelist(id) {
+        let $scores = $table.find(`tbody tr:eq(${id}) td:eq(2)`).text();
+        if (parseInt($scores) >= 9) return alert('Вам не поднять свою оценку')
 
-        let note_arr;
+        let $arr_of_scores = $table.find(`tbody tr:eq(${id}) td:eq(1)`).contents().filter(function() {return this.nodeType === 3}).text().split(', ').map(Number);
+        let $Need_scores = nextscore($arr_of_scores, parseInt($scores));
 
-        try {
-            let note = $(notes).find('td')[1];
-            note = $(note).find('span');
-            let both_notes = note[0].innerHTML+note[1].innerHTML;
-            note_arr = both_notes.split(', ');
-        } catch {
-            note_arr = $(notes).find('td')[1].innerHTML.split(', ');
-        }
+        $table.find(`tbody tr:eq(${id}) td:eq(1)`).text($arr_of_scores.join(', ')).append(($('<span>', {style: 'color: red', text: `, ${$Need_scores.join(', ')}`})));
+        $table.find(`tbody tr:eq(${id}) td:eq(2)`).text(average($table.find(`tbody tr:eq(${id}) td:eq(1)`).text().split(', ').map(Number))).css('color', 'red');
 
-        let nn = nextnote(note_arr.map(Number), parseInt($(notes).find('td')[2].innerHTML));
+        let $New_Average_of_averages = [];
+        $table.find('tbody').children().filter(s => s.nodeType !== 1).each(function() {
+            if ($(this).find('td:eq(0)').text() !== 'Educația fizică' && $(this).find('td:eq(0)').text() !== 'Educație pentru societate' && $(this).find('td:eq(0)').text() !== 'A/A') {$New_Average_of_averages.push(parseFloat(average($(this).find('td:eq(1)').text().split(', ').map(Number)).toFixed(2)))}
+        });
 
-        let old_notes = $(notes).find('td')[1];
-        let sp_old = document.createElement('span');
-        sp_old.innerHTML = old_notes.innerHTML;
-        $(old_notes).empty();
-        old_notes.append(sp_old);
-        let sp_new = document.createElement('span');
-        sp_new.innerHTML = ', '+nn.join(', ');
-        sp_new.style.color = 'red';
-        old_notes.append(sp_new);
-
-
-        let new_avgavg = note_arr.slice().map(Number);
-        Array.prototype.push.apply(new_avgavg,nn);
-        $(notes).find('td')[2].innerHTML = average(new_avgavg);
-        $(notes).find('td')[2].style.color = 'red';
-
-
-        let aa = [];
-        let get_table = document.querySelectorAll('[summary="Semestrul I"]')[0].childNodes[3];
-        let lessons = get_table.childNodes;
-        //let lessons = document.querySelectorAll('tbody')[26].childNodes;
-        for (let lesson of lessons) {
-            if (lesson.nodeName == 'TR') {
-                let childsec = $(lesson).children()[0];
-                if ($(childsec).children()[0].innerHTML != 'Educație pentru societate' & $(childsec).children()[0].innerHTML != 'A/A' & $(childsec).children()[0].innerHTML != 'Educația fizică') {
-                    try {
-                        aa.push($(lesson).children()[2].innerHTML)
-                    } catch {console.log($(lesson).children())}
-                }
-            }
-        }
-
-        console.log(aa);
-
-        $($(lessons).last()).children()[2].innerHTML = parseInt(average(aa.map(Number)) * 100) / 100;
-        $($(lessons).last()).children()[2].style.color = 'red';
-
-        return;
+        $table.find('tbody tr:last td:eq(2)').text(parseFloat(average($New_Average_of_averages.map(Number))).toFixed(2)).css('color', 'red');
     }
 
-    try {
-        let avg_i = document.createElement('th');
-        avg_i.className = 't-Report-colHead';
-        avg_i.align = 'left';
-        avg_i.innerHTML = 'Average';
 
-        let avg = document.querySelectorAll('thead')[1];
-        $(avg).children()[0].append(avg_i);
+    let currentDate = new Date();
+    let semestrul = ''; if (currentDate.getMonth() >= 8 && currentDate.getMonth() <= 11) {semestrul = 'Semestrul I'} else {
+        semestrul = 'Semestrul II';
 
-        let table = document.querySelectorAll('[summary="Semestrul I"]')[0].childNodes[3];
-        let lessons = table.childNodes;
-        let avgavg = [];
-        let count = -1;
-        for (let lesson of lessons) {
-            count++
-            if (lesson.nodeName == 'TR') {
-                let childsec = $(lesson).children()[0];
-                if ($(childsec).children()[0].innerHTML != 'Educație pentru societate' ) {
-                    let note = document.createElement('td');
-                    note.className = 't-Report-cell';
-                    let mathavg = parseInt(average($(lesson).children()[1].innerHTML.split(', ').map(Number)) * 100) / 100;
-                    if (mathavg) {
-                        note.innerHTML = mathavg;
-                        avgavg.push(note.innerHTML);
+        $(`[summary="Semestrul I"]`).find('thead tr').append($('<th>', {'class': 't-Report-colHead', 'align': 'left', 'html': 'Average'}));
+        let average_of_averages = [];
+        $(`[summary="Semestrul I"]`).find('tbody').children().filter(s => s.nodeType !== 1).each(function() {
+            if ($(this).find('td:eq(0)').text() !== 'Educație pentru societate') {let average_score = parseFloat(average($(this).find('td:eq(1)').text().split(', ').map(Number)).toFixed(2)); if (average_score) {average_of_averages.push(average_score); $(this).append( $('<td>', {class: 't-Report-cell', html: average_score}))}}
+        });
+        $(`[summary="Semestrul I"]`).find('tbody').append($('<tr>').append($('<td>', {class: 't-Report-cell', headers: 'DISCIPLINA'}).append($('<span>', {style: 'color: skyblue; font-weight:bold;', text: 'A/A'}))).append($('<td>')).append($('<td>', {class: 't-Report-cell', text: parseFloat(average(average_of_averages)).toFixed(2)})));
+    }
 
+    const $table = $(`[summary="${semestrul}"]`);
+    $table.find('thead tr').append($('<th>', {'class': 't-Report-colHead', 'align': 'left', 'html': 'Average'}));
 
-                        $(lesson).append(note);
-                        let btnplus = document.createElement('a');
-                        let tdbtn = document.createElement('td');
-                        btnplus.href='#';
-                        btnplus.innerHTML = '+';
-                        tdbtn.className = 't-Report-cell';
-                        btnplus.id = 'EDITNLIST:' + count;
-                        btnplus.onclick = function() { editnotelist(btnplus.id.split(':')[1]);};
-                        $(tdbtn).append(btnplus);
-                        $(lesson).append(tdbtn);
-                    }
-                }
-            }
-        }
-
-        let ntr = document.createElement('tr');
-        let aa = document.createElement('td');
-        let spann = document.createElement('span');
-        aa.className='t-Report-cell';
-        aa.headers = 'DISCIPLINA';
-        spann.style.cssText = 'color: skyblue; font-weight:bold;';
-        spann.innerHTML='A/A';
-        $(aa).append(spann);
-        $(ntr).append(aa);
-        $(ntr).append(document.createElement('td'));
-        let ntd = document.createElement('td');
-        ntd.className = 't-Report-cell';
-        ntd.innerHTML = parseInt(average(avgavg.filter(f => f != 'NaN').map(Number)) * 100) / 100;
-        $(ntr).append(ntd);
-        $(table).append(ntr);
-    } catch(e) {console.log(e)}
+    let average_of_averages = [];
+    let count = -1
+    $table.find('tbody').children().filter(s => s.nodeType !== 1).each(function() {
+        count++
+        if ($(this).find('td:eq(0)').text() !== 'Educație pentru societate') {let average_score = parseFloat(average($(this).find('td:eq(1)').text().split(', ').map(Number)).toFixed(2)); if (average_score) {average_of_averages.push(average_score); $(this).append( $('<td>', {class: 't-Report-cell', html: average_score})); let $PlusButton = $('<a>', {href: '#', id: count, text: '+'}); $(this).append($('<td>', {class: 't-Report-cell'}).append($PlusButton.click(function() {editscorelist($PlusButton.attr('id'))})))}}
+    });
+    $table.find('tbody').append($('<tr>').append($('<td>', {class: 't-Report-cell', headers: 'DISCIPLINA'}).append($('<span>', {style: 'color: skyblue; font-weight:bold;', text: 'A/A'}))).append($('<td>')).append($('<td>', {class: 't-Report-cell', text: parseFloat(average(average_of_averages)).toFixed(2)})));
 })();
