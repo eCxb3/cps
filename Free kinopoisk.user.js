@@ -5,7 +5,8 @@
 // @description  Allows you to watch movies/series on kinopoisk.ru for free.
 // @author       ezX {cps};
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js
-// @include      https://www.kinopoisk.ru/*
+// @include      https://www.kinopoisk.ru/series/*
+// @include      https://www.kinopoisk.ru/film/*
 // @include      https://flicksbar.*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        GM_getValue
@@ -73,8 +74,6 @@ _________        ___.                                     __
                 }).append($newButton)
                     .prependTo('div.styles_buttonsContainer__HREZO');
             }
-
-            //$('a.styles_posterLink__Xjqyr').attr("href", function(i, val) {console.log(`${val} - ${"https://www.kinopoisk.ru" + val}`); return "https://www.kinopoisk.ru" + val});
 
             setInterval(function() {
                 $('a.styles_posterLink__Xjqyr').each(function() {
