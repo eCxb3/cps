@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Premium Logo
-// @namespace    http://github.com/
-// @version      2077v.2
+// @namespace    https://github.com/eCxb3/cps
+// @version      2077v.2.0.1
 // @description  Changes the youtube logo to premium.
 // @author       ezX 「CYBERPSYCHOOOOOS」
 // @match        https://www.youtube.com/*
@@ -27,18 +27,14 @@ _________        ___.                                     __
 
 (function() {
     'use strict';
+    const $ = jQuery.noConflict(true);
 
-    let logo = $('#logo-icon');
-    $(logo).empty();
+    let logo = $('#logo-icon').empty();
     let imglogo = document.createElement('img');
 
     if ($('html').is('[dark]')) {
-        imglogo.src = 'https://i.imgur.com/m3TlTOK.png';
+        $(logo).append($('<img>', {src: 'https://i.imgur.com/m3TlTOK.png', style: 'width: 94px'}));
     } else {
-        imglogo.src = 'https://i.imgur.com/k3guVls.png';
+        $(logo).append($('<img>', {src: 'https://i.imgur.com/k3guVls.png', style: 'width: 94px'}));
     }
-
-    imglogo.style.width = '94px';
-    $(logo).append(imglogo);
-
 })();
