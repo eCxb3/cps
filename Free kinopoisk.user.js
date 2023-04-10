@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.2.2
+// @version        2077v.1.2.3-beta
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.  |  Use with Tampermonkey
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.  | Использование с Tampermonkey
 // @author         ezX {cps};
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js
-// @include        https://www.kinopoisk.ru/series/*
-// @include        https://www.kinopoisk.ru/film/*
+// @include        https://www.kinopoisk.ru/*
 // @include        https://flicksbar.*/*
+// @connect        www.kinopoisk.ru
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
 // ==/UserScript==
@@ -68,11 +68,12 @@ _________        ___.                                     __
                 $('<div>', {
                     class: 'styles_button__tQYKG'
                 }).append($newButton)
-                    .prependTo('div.styles_buttonsContainer__HREZO');
+                    .prependTo($('div.styles_buttonsContainer__HREZO').length ? 'div.styles_buttonsContainer__HREZO' : 'div.styles_buttonsContainer__r_AHo');
             }
 
             setInterval(function() {
-                $('a.styles_posterLink__Xjqyr').each(function() {
+                $('a.styles_posterLink__Xjqyr').filter(':not(.processed)').each(function() {
+                    $(this).addClass('processed');
                     $(this).replaceWith($(this).clone());
                 });
             }, 500);
@@ -110,7 +111,7 @@ _________        ___.                                     __
                                     $('<h2>', {style: 'margin-bottom: 10px; display: inline-block; font: 20px normal tahoma, verdana, arial, sans-serif; color: #b5b5b5'}).append(
                                         $('<i>', {style: 'margin-top: 15px; margin-bottom: 16px; margin-left: 15px; margin-right: 20px', class: 'back-arrow'}).click(function() {window.location.host = 'www.kinopoisk.ru'})
                                     ).append(function() {
-                                        if (alt_name == 0) {$(this).append($NameFilm)} else {$(this).append(`${$NameFilm} / ${alt_name}`)}
+                                        $(this).append(alt_name == 0 ? $NameFilm : `${$NameFilm} / ${alt_name}`);
                                     })
                                 )
                             )
@@ -129,7 +130,23 @@ _________        ___.                                     __
     };
 
     if (window.location.host === 'www.kinopoisk.ru') {
-        kinopoisk();
+        if (!window.location.pathname.includes('/film') && !window.location.pathname.includes('/series')) {
+            setInterval(function() {
+                let $replace_elements = $('.styles_root__ti07r, .styles_root__H9wyL, .styles_root__NqHb1, .styles_titleWrapper__tjhUr, .styles_root__LNqvp');
+                $replace_elements.filter(':not(.processed)').replaceWith(function() {
+                    $(this).addClass('processed');
+                    return $(this).clone();
+                });
+                $('a:contains("Смотреть")').filter(':not(.processed)').each(function() {
+                    let $WatchButtons = $(this);
+                    let $WatchButtons_link = $WatchButtons.attr('href');
+                    $WatchButtons.attr('href', `https://sspoisk.ru/${$WatchButtons_link.split('/')[1]}/${$WatchButtons_link.split('/')[2]}/`);
+                    $WatchButtons.addClass('processed');
+                });
+            }, 200);
+        } else {
+            kinopoisk();
+        }
     } else if (window.location.host.includes('flicksbar')) {
         watching();
     }
