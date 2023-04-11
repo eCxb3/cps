@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.2.3-beta
+// @version        2077v.1.2.3
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.  |  Use with Tampermonkey
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.  | Использование с Tampermonkey
 // @author         ezX {cps};
@@ -142,6 +142,10 @@ _________        ___.                                     __
                     let $WatchButtons_link = $WatchButtons.attr('href');
                     $WatchButtons.attr('href', `https://sspoisk.ru/${$WatchButtons_link.split('/')[1]}/${$WatchButtons_link.split('/')[2]}/`);
                     $WatchButtons.addClass('processed');
+                });
+                $("a[href*='/watch/']").filter(':not(.processed):not(:contains("Смотреть"))').each(function() {
+                    $(this).attr('href', $(this).attr('href').replace(/\/watch\/.*/, ''));
+                    $(this).addClass('processed');
                 });
             }, 200);
         } else {
