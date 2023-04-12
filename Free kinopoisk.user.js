@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.2.3
+// @version        2077v.1.2.3.1
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.  |  Use with Tampermonkey
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.  | Использование с Tampermonkey
 // @author         ezX {cps};
@@ -70,6 +70,10 @@ _________        ___.                                     __
                 }).append($newButton)
                     .prependTo($('div.styles_buttonsContainer__HREZO').length ? 'div.styles_buttonsContainer__HREZO' : 'div.styles_buttonsContainer__r_AHo');
             }
+
+            $('.styles_root__dYidr, .styles_root__7mPJN').replaceWith(function() {
+                return $(this).clone();
+            });
 
             setInterval(function() {
                 $('a.styles_posterLink__Xjqyr').filter(':not(.processed)').each(function() {
