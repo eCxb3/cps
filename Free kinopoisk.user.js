@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.2.3.2
+// @version        2077v.1.2.3.3
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.  |  Use with Tampermonkey
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.  | Использование с Tampermonkey
 // @author         ezX {cps};
@@ -42,14 +42,14 @@ _________        ___.                                     __
     console.log('Start ezX 😎');
     const kinopoisk = function() {
         $(document).ready(function() {
-            const $oldButton = $('button.kinopoisk-watch-online-button.styles_root__EZXGw');
+            const $oldButton = $('button.kinopoisk-watch-online-button');
 
             if ($oldButton.length) {
                 $oldButton.remove();
 
                 const $newButton = $('<button>', {
                     class: $oldButton.attr('class'),
-                    text: 'Смотреть'
+                    html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9" data-tid="6cb8d12f">Смотреть</span>'
                 }).click(function() {
                     const site = window.location.href.split('kino');
                     window.location.href = `${site[0]}ss${site[1]}`;
@@ -58,8 +58,8 @@ _________        ___.                                     __
                 $('div.watch-online-button.styles_containerRoot__cCC6E').prepend($newButton);
             } else {
                 const $newButton = $('<button>', {
-                    class: 'kinopoisk-watch-online-button styles_root__EZXGw styles_rootPlus__bBjkI styles_rootDesktop__fGTTz styles_rootSizeH52__4QXvi styles_isRounded__fiuxG styles_watchOnlineButton__ruFtI',
-                    html: '<span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'
+                    class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9',
+                    html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'
                 }).click(function() {
                     const site = window.location.href.split('kino');
                     window.location.href = `${site[0]}ss${site[1]}`;
@@ -76,7 +76,7 @@ _________        ___.                                     __
             });
 
             setInterval(function() {
-                $('a.styles_posterLink__Xjqyr').filter(':not(.processed)').each(function() {
+                $('a.styles_posterLink__Xjqyr, a.styles_captions__9Azea').filter(':not(.processed)').each(function() {
                     $(this).addClass('processed');
                     $(this).replaceWith($(this).clone());
                 });
@@ -135,6 +135,12 @@ _________        ___.                                     __
     };
 
     if (window.location.host === 'www.kinopoisk.ru') {
+        setInterval(function() {
+            $("a[href*='/watch/']").filter(':not(.processed):not(:contains("Смотреть"))').each(function() {
+                $(this).attr('href', $(this).attr('href').replace(/\/watch\/.*/, ''));
+                $(this).addClass('processed');
+            });
+        }, 200);
         if (!window.location.pathname.includes('/film') && !window.location.pathname.includes('/series')) {
             setInterval(function() {
                 let $replace_elements = $('.styles_poster__gJgwz, .base-movie-main-info_link__YwtP1, .styles_root__H9wyL, .styles_root__NqHb1, .styles_titleWrapper__tjhUr, .styles_root__LNqvp');
@@ -148,15 +154,11 @@ _________        ___.                                     __
                     $WatchButtons.attr('href', `https://sspoisk.ru/${$WatchButtons_link.split('/')[1]}/${$WatchButtons_link.split('/')[2]}/`);
                     $WatchButtons.addClass('processed');
                 });
-                $("a[href*='/watch/']").filter(':not(.processed):not(:contains("Смотреть"))').each(function() {
-                    $(this).attr('href', $(this).attr('href').replace(/\/watch\/.*/, ''));
-                    $(this).addClass('processed');
-                });
             }, 200);
         } else {
             kinopoisk();
         }
-    } else if (window.location.host.includes('flicksbar')) {
+    } else if (window.location.host.includes('flicksbar') && !(window.location.href.includes('kinobox/fallback.html?null='))) {
         watching();
     }
 })();
