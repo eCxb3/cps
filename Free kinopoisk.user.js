@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.4.2
+// @version        2077v.1.4.2.1
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
@@ -9,7 +9,7 @@
 // @include        https://www.kinopoisk.ru/*
 // @include        https://flicksbar.*/*
 // @include        *://*svetacdn.*/*
-// @include        *://*framprox.*/*
+// @include        *://*embprox.*/*
 // @include        *://*kodik.*/*
 // @connect        www.kinopoisk.ru
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
@@ -316,7 +316,7 @@ _________        ___.                                     __
         $('title').text(`Кинопоиск.`);
         watching();
     } else {
-        const blockedDomains = ["aj1907", "4251.tech", "spylees", "res81", "res45", "xcec", "vidalak", "cdn-rtb", "kimberlite", "itraff", "pub-eu", "adlook", "ad.moe.video", "playmatic"];
+        const blockedDomains = ["aj1907", "4251.tech", "spylees", "res81", "res45", "xcec", "vidalak", "cdn-rtb", "kimberlite", "itraff", "pub-eu", "adlook", "ad.moe.video", "playmatic", "playjusting", "snsv", "imasdk", "utraff", "yandex.ru/ads", "qvol", "onetouch8", "laimroll", "buzzoola", "trafficbass"];
 
         const originalOpen = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function (method, url) {
