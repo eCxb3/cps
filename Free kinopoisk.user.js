@@ -1,7 +1,11 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.4.2.2
+// @version        2077v.1.4.2.3
+// @source         https://github.com/eCxb3/cps
+// @supportURL     https://github.com/eCxb3/cps
+// @updateURL      https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
+// @downloadURL    https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
@@ -15,8 +19,6 @@
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
 // @run-at         document-body
-// @updateURL      https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
-// @downloadURL    https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
 // @compatible	   Chrome
 // @compatible	   Edge
 // @compatible	   Firefox
@@ -87,7 +89,7 @@ _________        ___.                                     __
 
                 let checkLoad = setInterval(function() {
                     if (!$('.spinner').length || document.readyState === 'complete') {
-                        $btnLoad.remove();
+                        if (document.readyState === 'complete') $btnLoad.remove();
                         $ConButton.prepend($('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`})));
                         clearInterval(checkLoad);
                     }
