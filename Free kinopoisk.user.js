@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/eCxb3/cps
-// @version        2077v.1.4.2.3
+// @version        2077v.1.4.2/4
 // @source         https://github.com/eCxb3/cps
 // @supportURL     https://github.com/eCxb3/cps
 // @updateURL      https://github.com/eCxb3/cps/raw/main/Free%20kinopoisk.user.js
@@ -12,8 +12,9 @@
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
 // @include        https://www.kinopoisk.ru/*
 // @include        https://flicksbar.*/*
+// @include        *://thesaurus.allohalive.*/*
 // @include        *://*svetacdn.*/*
-// @include        *://*embprox.*/*
+// @include        *://api.*.ws/*
 // @include        *://*kodik.*/*
 // @connect        www.kinopoisk.ru
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
@@ -274,7 +275,7 @@ _________        ___.                                     __
         document.addEventListener('DOMContentLoaded', function() {
             $('body').on('click', 'a[href]:not(.styles_page__zbGy7)', function() {
                 $(this).off('click');
-                var url = $(this).attr('href');
+                let url = $(this).attr('href');
                 window.location.href = url;
             });
             setInterval(function() {
@@ -318,7 +319,7 @@ _________        ___.                                     __
         $('title').text(`Кинопоиск.`);
         watching();
     } else {
-        const blockedDomains = ["aj1907", "4251.tech", "spylees", "res81", "res45", "xcec", "vidalak", "cdn-rtb", "kimberlite", "itraff", "pub-eu", "adlook", "ad.moe.video", "playmatic", "playjusting", "adpod", "snsv", "imasdk", "utraff", "yandex.ru/ads", "qvol", "onetouch8", "laimroll", "buzzoola", "trafficbass"];
+        const blockedDomains = ["aj1907", "4251.tech", "spylees", "res81", "res45", "xcec", "vidalak", "cdn-rtb", "kimberlite", "itraff", "pub-eu", "adlook", "ad.moe.video", "playmatic", "playjusting", "adpod", "079301eaff0975107716716fd1cb0dcd", "snsv", "imasdk", "utraff", "yandex.ru/ads", "qvol", "onetouch8", "laimroll", "buzzoola", "trafficbass"];
 
         const originalOpen = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function (method, url) {
